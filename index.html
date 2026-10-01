@@ -7,7 +7,8 @@
 <title>Nhé é Sé - Desejo de fala</title>
 <style>
   :root {
-    --panel: #c4c4c4;      /* cinza do painel fixo */
+    --panel: #dedede;      /* cinza claro do painel fixo */
+    --shadow: rgba(0,0,0,0.45);
     --ink: #000000;
     --btn: #000000;        /* botões: pretos */
     --btn-press: #333333;
@@ -29,13 +30,26 @@
   button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
   button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 
+  /* ===== EFEITO DE CLIQUE + SOMBRA DURA =====
+     Sombra sólida deslocada para baixo; ao tocar, o botão "afunda".
+     Para sombra suave, troque --btn-shadow por: 4px 5px 12px rgba(0,0,0,0.3) */
+  .top-panel button {
+    --btn-shadow: 4px 5px 0 var(--shadow);
+    box-shadow: var(--btn-shadow);
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+  }
+  .top-panel button:active {
+    transform: translate(3px, 4px) scale(0.97);
+    box-shadow: 1px 1px 0 var(--shadow);
+  }
+
   /* ===== PAINEL FIXO CINZA ===== */
   .top-panel {
     flex: 0 0 auto;
     background: var(--panel);
     color: var(--ink);
     border-radius: 0 0 22px 22px;
-    padding: calc(12px + env(safe-area-inset-top)) 10px 14px;
+    padding: calc(12px + env(safe-area-inset-top)) 10px 18px;
   }
 
   .exhibition-title {
@@ -117,14 +131,6 @@
     object-fit: cover;
     background: #444;
   }
-  .cover-badge {
-    position: absolute; bottom: 4px; right: 4px;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: #000; color: #fff;
-    border: 2px solid #fff;
-    font-weight: 700; font-size: 1em;
-    display: flex; align-items: center; justify-content: center;
-  }
 
   .play-circle {
     grid-area: play;
@@ -141,21 +147,21 @@
   /* coluna da direita: tempo + status */
   .info {
     grid-area: info;
-    justify-self: end;
-    display: flex; flex-direction: column; align-items: flex-end;
+    justify-self: center;
+    display: flex; flex-direction: column; align-items: center;
     gap: 4px;
     min-width: 0;
     white-space: nowrap;
-    text-align: right;
+    text-align: center;
   }
   .time-in-block {
-    display: flex; flex-direction: column; align-items: flex-end;
+    display: flex; flex-direction: column; align-items: center;
     font-variant-numeric: tabular-nums;
     line-height: 1.15;
   }
-  .t-cur { font-weight: 700; font-size: 1.3em; }
-  .t-dur { font-size: 0.95em; }
-  .status-text { font-weight: 700; font-size: 1em; }
+  .t-cur { font-weight: 700; font-size: clamp(1.3em, 5.4vw, 1.6em); }
+  .t-dur { font-size: clamp(0.95em, 4vw, 1.15em); }
+  .status-text { font-weight: 700; font-size: clamp(1em, 4.2vw, 1.2em); }
   .status-text.paused  { color: #ff6b5e; }  /* vermelho claro: ~6:1 sobre preto */
   .status-text.playing { color: #2ecc71; }  /* verde: ~10:1 sobre preto */
 
@@ -203,6 +209,8 @@
     background: transparent; color: #fff;
     text-align: left; cursor: pointer;
   }
+  .track-item { transition: transform 0.08s ease; }
+  .track-item:active { transform: scale(0.97); }
   .track-item:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
   .track-item-num {
     font-weight: 700; font-size: 1.5em;
@@ -239,7 +247,6 @@
       <button type="button" class="center-btn" id="playBtn" aria-label="Reproduzir">
         <span class="cover-wrap" id="coverWrap" aria-hidden="true">
           <img class="cover-thumb" id="coverImage" src="" alt="" decoding="async">
-          <span class="cover-badge" id="coverBadge"></span>
         </span>
         <span class="play-circle" aria-hidden="true"><span class="pill-icon" id="playIcon">▶</span></span>
         <span class="info" aria-hidden="true">
@@ -310,7 +317,6 @@ const statusText = $('statusText');
 const trackLabel = $('trackLabel');
 const cover      = $('coverImage');
 const coverWrap  = $('coverWrap');
-const coverBadge = $('coverBadge');
 const timeVisual = $('timeVisual');
 const timeSr     = $('timeSr');
 const announcer  = $('announcer');
@@ -373,7 +379,6 @@ function loadTrack(index, { autoplay = true, announce = true } = {}) {
     cover.removeAttribute('src');
     coverWrap.classList.add('hidden');
   }
-  coverBadge.textContent = index + 1;
   trackLabel.textContent = t.title;
 
   highlightTrack(index);
