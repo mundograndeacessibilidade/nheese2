@@ -7,60 +7,52 @@
 <title>Nhé é Sé - Desejo de fala</title>
 <style>
   :root {
-    --panel: #ffffff;
+    --panel: #c4c4c4;      /* cinza do painel fixo */
     --ink: #000000;
-    --side: #e8e8e8;
-    --side-press: #d0d0d0;
+    --btn: #000000;        /* botões: pretos */
+    --btn-press: #333333;
+    --btn-text: #ffffff;
     --bg-app: #1c1c1c;
-    --playing: #1e7e34;   /* verde escuro: contraste ~5:1 sobre branco */
   }
 
   * { box-sizing: border-box; }
-
-  html, body {
-    height: 100%;
-    margin: 0;
-    background: var(--bg-app);
-  }
+  html, body { height: 100%; margin: 0; background: var(--bg-app); }
 
   .app-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    max-width: 600px;
-    margin: 0 auto;
+    display: flex; flex-direction: column;
+    height: 100vh; height: 100dvh;
+    max-width: 600px; margin: 0 auto;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     overflow: hidden;
   }
 
   button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
-  button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  button:focus-visible { outline: 4px solid var(--ink); outline-offset: 3px; }
 
-  /* ===== PAINEL FIXO BRANCO ===== */
+  /* ===== PAINEL FIXO CINZA ===== */
   .top-panel {
     flex: 0 0 auto;
     background: var(--panel);
     color: var(--ink);
     border-radius: 0 0 22px 22px;
-    padding: calc(12px + env(safe-area-inset-top)) 12px 16px;
+    padding: calc(12px + env(safe-area-inset-top)) 10px 14px;
   }
 
   .exhibition-title {
     margin: 0 0 12px;
-    font-size: 0.85em;
-    font-weight: 400;
+    font-size: 1em;
+    font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     text-align: center;
   }
 
-  /* ===== PALCO: anterior | play | próxima =====
+  /* ===== PALCO: anterior | bloco de play | próxima =====
      No código o play vem primeiro (leitor de tela ouve a faixa antes),
      mas o grid posiciona visualmente: esquerda / centro / direita. */
   .stage {
     display: grid;
-    grid-template-columns: minmax(56px, 18%) 1fr minmax(56px, 18%);
+    grid-template-columns: minmax(58px, 16%) 1fr minmax(58px, 16%);
     grid-template-areas: "prev center next";
     gap: 8px;
     align-items: stretch;
@@ -68,128 +60,109 @@
 
   .side-btn {
     border: none;
-    border-radius: 16px;
-    background: var(--side);
-    color: var(--ink);
-    font-size: 1.9em;
+    border-radius: 18px;
+    background: var(--btn);
+    color: var(--btn-text);
+    font-size: 2.2em;
     line-height: 1;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     padding: 0;
-    min-height: 120px;
-    transition: background 0.12s ease;
   }
-  .side-btn:active { background: var(--side-press); }
+  .side-btn:active { background: var(--btn-press); }
   #prevBtn { grid-area: prev; }
   #nextBtn { grid-area: next; }
 
+  /* ===== BLOCO DE PLAY: capa + título + botão + tempo, tudo um botão só ===== */
   .center-btn {
     grid-area: center;
     border: none;
-    background: transparent;
-    color: var(--ink);
-    padding: 4px 2px 6px;
-    border-radius: 18px;
+    background: var(--btn);
+    color: var(--btn-text);
+    border-radius: 22px;
+    padding: 14px 12px 16px;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 12px;
     text-align: center;
     min-width: 0;
-    transition: transform 0.08s ease;
   }
-  .center-btn:active { transform: scale(0.97); }
+  .center-btn:active { background: var(--btn-press); }
 
   .cover-wrap { position: relative; }
   .cover-wrap.hidden { display: none; }
   .cover-thumb {
     display: block;
-    width: 132px;
-    height: 132px;
-    border-radius: 16px;
+    width: 140px; height: 140px;
+    border-radius: 14px;
     object-fit: cover;
-    background: #ddd;
+    background: #444;
   }
   .cover-badge {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #000;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    position: absolute; bottom: 6px; right: 6px;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #000; color: #fff;
+    border: 2px solid #fff;
+    font-weight: 700; font-size: 1.25em;
+    display: flex; align-items: center; justify-content: center;
   }
 
   .track-title {
     font-weight: 700;
-    font-size: 1.3em;
+    font-size: 1.6em;
     line-height: 1.15;
     max-width: 100%;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
   }
 
-  /* pílula de ação: é a "cara" do botão grande */
-  .play-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--ink);
-    color: #fff;
-    border-radius: 999px;
-    padding: 9px 18px;
-    font-weight: 700;
-    font-size: 1.05em;
-    transition: background 0.15s ease;
+  /* linha de baixo do bloco: círculo de play + timecode */
+  .play-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px;
   }
-  .play-pill .pill-icon { font-size: 0.95em; line-height: 1; }
-  .center-btn.is-playing .play-pill { background: var(--playing); }
+  .play-circle {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: #fff; color: #000;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .play-circle .pill-icon {
+    font-size: 2.1em; line-height: 1;
+    margin-left: 5px;  /* centraliza visualmente o triângulo */
+  }
+  .center-btn.is-playing .play-circle .pill-icon { margin-left: 0; font-size: 1.7em; }
 
-  .time-row {
-    margin: 10px 0 14px;
-    text-align: center;
-    font-size: 1.05em;
+  .time-in-block {
+    display: flex; flex-direction: column;
+    font-size: 1.25em;
     font-variant-numeric: tabular-nums;
+    text-align: left;
+    line-height: 1.25;
   }
+
+  .t-cur { font-weight: 700; font-size: 1.15em; }
+  .t-dur { font-size: 0.9em; }
 
   /* ===== VOLTAR 15s / VELOCIDADE / AVANÇAR 15s ===== */
-  .skip-row { display: flex; gap: 8px; }
+  .skip-row { display: flex; gap: 8px; margin-top: 10px; }
   .btn-skip {
     flex: 1;
-    border: none;
-    border-radius: 12px;
-    background: var(--side);
-    color: var(--ink);
-    font-weight: 700;
-    font-size: 17px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 13px 6px;
+    border: none; border-radius: 14px;
+    background: var(--btn); color: var(--btn-text);
+    font-weight: 700; font-size: 21px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 15px 6px;
     cursor: pointer;
   }
-  .btn-skip:active { background: var(--side-press); }
+  .btn-skip:active { background: var(--btn-press); }
   .btn-skip .icon { font-size: 1.3em; line-height: 1; }
-  .speed-btn { background: #fff; box-shadow: inset 0 0 0 2px var(--ink); }
 
   /* ===== LISTA ROLÁVEL ===== */
   .playlist-scroll {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    padding: 20px 14px calc(16px + env(safe-area-inset-bottom));
+    flex: 1 1 auto; overflow-y: auto;
+    padding: 20px 12px calc(16px + env(safe-area-inset-bottom));
     -webkit-overflow-scrolling: touch;
   }
   .playlist { list-style: none; margin: 0; padding: 0; }
@@ -197,55 +170,32 @@
 
   .track-item {
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 14px;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    background: transparent;
-    color: #fff;
-    text-align: left;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 12px;
+    border: 3px solid transparent; border-radius: 14px;
+    background: transparent; color: #fff;
+    text-align: left; cursor: pointer;
   }
-  .track-item:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .track-item:focus-visible { outline: 4px solid #fff; outline-offset: 2px; }
   .track-item-num {
-    font-weight: 700;
-    font-size: 1.3em;
-    min-width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    font-weight: 700; font-size: 1.5em;
+    min-width: 44px; height: 44px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
   }
   .track-item-title {
-    font-size: 1.3em;
-    min-width: 0;
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 1.5em; line-height: 1.2;
+    min-width: 0; flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   /* faixa ativa: borda + número em círculo (ecoa o badge da capa) */
-  .track-item[aria-current="true"] {
-    border-color: #fff;
-    background: rgba(255,255,255,0.10);
-  }
-  .track-item[aria-current="true"] .track-item-num {
-    background: #fff;
-    color: #000;
-  }
+  .track-item[aria-current="true"] { border-color: #fff; background: rgba(255,255,255,0.12); }
+  .track-item[aria-current="true"] .track-item-num { background: #fff; color: #000; }
+  .track-item[aria-current="true"] .track-item-title { font-weight: 700; }
 
   .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
   }
 </style>
 </head>
@@ -257,34 +207,33 @@
     <h1 class="exhibition-title">Nhé é Sé - Desejo de fala</h1>
 
     <div class="stage">
-      <!-- botão grande: capa + título + pílula. Conteúdo interno escondido do leitor de tela;
-           o nome do botão vem do aria-label, que muda entre Reproduzir/Pausar. -->
+      <!-- bloco de play: capa + título + botão + tempo, tudo um botão só.
+           Conteúdo interno escondido do leitor de tela; o nome vem do aria-label. -->
       <button type="button" class="center-btn" id="playBtn" aria-label="Reproduzir">
         <span class="cover-wrap" id="coverWrap" aria-hidden="true">
           <img class="cover-thumb" id="coverImage" src="" alt="" decoding="async">
           <span class="cover-badge" id="coverBadge"></span>
         </span>
         <span class="track-title" id="trackLabel" aria-hidden="true">—</span>
-        <span class="play-pill" aria-hidden="true">
-          <span class="pill-icon" id="playIcon">▶</span>
-          <span id="playLabel">Tocar</span>
+        <span class="play-row" aria-hidden="true">
+          <span class="play-circle"><span class="pill-icon" id="playIcon">▶</span></span>
+          <span class="time-in-block" id="timeVisual">00:00<br>04:01</span>
         </span>
+        <span id="playLabel" hidden></span>
       </button>
 
       <button type="button" class="side-btn" id="prevBtn" aria-label="Faixa anterior">⏮</button>
       <button type="button" class="side-btn" id="nextBtn" aria-label="Próxima faixa">⏭</button>
     </div>
 
-    <div class="time-row">
-      <span id="timeVisual" aria-hidden="true">00:00 / 00:00</span>
-      <span class="sr-only" id="timeSr">Tempo: 00:00 de 00:00</span>
-    </div>
+    <!-- tempo para leitor de tela (invisível na tela; o visual está dentro do bloco) -->
+    <span class="sr-only" id="timeSr">Tempo: 00:00 de 00:00</span>
 
     <div class="skip-row">
       <button type="button" class="btn-skip" id="rewindBtn" aria-label="Voltar 15 segundos">
         <span class="icon" aria-hidden="true">«</span>15s
       </button>
-      <button type="button" class="btn-skip speed-btn" id="speedBtn">1x</button>
+      <button type="button" class="btn-skip" id="speedBtn">1x</button>
       <button type="button" class="btn-skip" id="forwardBtn" aria-label="Avançar 15 segundos">
         15s<span class="icon" aria-hidden="true">»</span>
       </button>
@@ -295,7 +244,7 @@
     <ol class="playlist" id="playlist"></ol>
   </nav>
 
-  <!-- anuncia a troca de faixa para leitor de tela (anterior/próxima/fim da faixa) -->
+  <!-- anuncia a troca de faixa para leitor de tela -->
   <div class="sr-only" id="announcer" aria-live="polite"></div>
 </div>
 
@@ -352,7 +301,7 @@ function formatTime(s) {
 function updateTime() {
   const cur = formatTime(audio.currentTime);
   const dur = formatTime(audio.duration);
-  timeVisual.textContent = `${cur} / ${dur}`;
+  timeVisual.innerHTML = `<span class="t-cur">${cur}</span><span class="t-dur">de ${dur}</span>`;
   timeSr.textContent = `Tempo: ${cur} de ${dur}`;
 }
 
