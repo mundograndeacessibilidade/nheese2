@@ -224,10 +224,20 @@
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
   }
-  /* na lista o nome quebra linha em vez de ser cortado */
+  /* nome em até 2 linhas, com altura de 2 linhas sempre reservada:
+     todos os itens da lista têm a mesma altura, com nome curto ou longo */
   .track-item-title {
     font-size: 1.5em; line-height: 1.2;
+    height: 2.4em;
     min-width: 0; flex: 1;
+    display: flex; align-items: center;
+  }
+  .track-item-title-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
     overflow-wrap: anywhere;
   }
   .track-item[aria-current="true"] { border-color: #fff; background: rgba(255,255,255,0.12); }
@@ -469,8 +479,8 @@ function createPlaylist() {
     btn.setAttribute('aria-label', `Faixa ${i + 1}: ${t.title}`);
     btn.innerHTML = `
       <span class="track-item-num" aria-hidden="true">${i + 1}</span>
-      <span class="track-item-title" aria-hidden="true"></span>`;
-    btn.querySelector('.track-item-title').textContent = t.title;
+      <span class="track-item-title" aria-hidden="true"><span class="track-item-title-text"></span></span>`;
+    btn.querySelector('.track-item-title-text').textContent = t.title;
     btn.addEventListener('click', () => loadTrack(i));
     li.appendChild(btn);
     playlistEl.appendChild(li);
